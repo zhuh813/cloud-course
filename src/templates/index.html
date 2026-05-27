@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antigravity Flask Developer Dashboard</title>
+    <meta name="description" content="A premium Flask developer console and monitor interface running securely on port 1919.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <div class="logo-container">
+            <div class="logo-icon">AG</div>
+            <div class="logo-text">
+                <h1>Antigravity Flask</h1>
+                <p>Modular Server Architecture</p>
+            </div>
+        </div>
+        <div class="badge" id="status-badge">
+            <span class="badge-dot"></span>
+            <span>Online (Port 1919)</span>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main>
+        <!-- Left Column: Metrics & Custom Actions -->
+        <section class="card-column" aria-label="System Metrics and Commands">
+            <!-- Metrics Card -->
+            <div class="card" id="metrics-card">
+                <h2 class="card-title">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                        <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                        <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                        <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                    </svg>
+                    System Environment
+                </h2>
+                <div class="grid-metrics">
+                    <div class="metric-box">
+                        <span class="metric-label">Python Version</span>
+                        <span class="metric-value" id="val-python">Loading...</span>
+                    </div>
+                    <div class="metric-box">
+                        <span class="metric-label">App Port</span>
+                        <span class="metric-value highlight" id="val-port">1919</span>
+                    </div>
+                    <div class="metric-box">
+                        <span class="metric-label">Live Uptime</span>
+                        <span class="metric-value highlight" id="val-uptime">0s</span>
+                    </div>
+                    <div class="metric-box">
+                        <span class="metric-label">Server Time</span>
+                        <span class="metric-value" id="val-time" style="font-size: 0.95rem;">Loading...</span>
+                    </div>
+                </div>
+                <div class="metric-box" style="margin-top: 0.5rem; width: 100%;">
+                    <span class="metric-label">Operating System / Platform</span>
+                    <span class="metric-value" id="val-platform" style="font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Loading...</span>
+                </div>
+            </div>
+
+            <!-- Cloud Telemetry & Stress Card -->
+            <div class="card" id="telemetry-card" style="margin-top: 1.5rem;">
+                <h2 class="card-title">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                    </svg>
+                    Cloud Telemetry & Stress
+                </h2>
+                
+                <div class="stress-warning-banner" id="stress-banner">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #f87171;">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    <span>WARNING: System load critical! Stress Test decay: <span id="stress-timer">15s</span></span>
+                </div>
+
+                <div class="telemetry-container">
+                    <div class="gauge-row">
+                        <div class="gauge-header">
+                            <span class="gauge-name">Simulated CPU Load</span>
+                            <span class="gauge-value" id="val-cpu">0.0%</span>
+                        </div>
+                        <div class="gauge-bar-bg">
+                            <div class="gauge-bar-fill" id="bar-cpu"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="gauge-row">
+                        <div class="gauge-header">
+                            <span class="gauge-name">Simulated Memory Allocation</span>
+                            <span class="gauge-value" id="val-memory">0.0%</span>
+                        </div>
+                        <div class="gauge-bar-bg">
+                            <div class="gauge-bar-fill" id="bar-memory"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="gauge-row">
+                        <div class="gauge-header">
+                            <span class="gauge-name">Active Web Sockets</span>
+                            <span class="gauge-value" id="val-sockets">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="button" class="btn btn-success" id="btn-stress-test">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                    Simulate Peak Cloud Load
+                </button>
+            </div>
+
+            <!-- Custom Echo Test Form -->
+            <div class="card" id="echo-card" style="margin-top: 1.5rem;">
+                <h2 class="card-title">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    Interactive Echo Form (POST API)
+                </h2>
+                <form id="echo-form">
+                    <div class="form-group" style="margin-bottom: 1.25rem;">
+                        <label for="input-name" class="form-label">Developer Name</label>
+                        <input type="text" id="input-name" class="form-input" placeholder="e.g. Antigravity Developer" required value="Antigravity User">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label for="input-message" class="form-label">Message Payload</label>
+                        <input type="text" id="input-message" class="form-input" placeholder="Enter text message to transmit..." required value="Flask runs perfectly on 1919!">
+                    </div>
+                    <button type="submit" class="btn" id="btn-submit-echo">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                        Transmit Echo Request
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Right Column: API Testing Suite & Realtime Console -->
+        <section class="card-column" aria-label="Developer Console and Controls">
+            <div class="card" id="console-card" style="height: auto; display: flex; flex-direction: column;">
+                <h2 class="card-title">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="4 17 10 11 4 5"></polyline>
+                        <line x1="12" y1="19" x2="20" y2="19"></line>
+                    </svg>
+                    Live API Console
+                </h2>
+
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem;">
+                    Trigger system requests below and watch reactive payloads render instantly.
+                </p>
+
+                <div class="btn-group" style="margin-bottom: 1rem;">
+                    <button type="button" class="btn btn-secondary" id="btn-test-health">
+                        GET /health
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="btn-test-status">
+                        GET /status
+                    </button>
+                </div>
+
+                <div class="console">
+                    <div class="console-header">
+                        <span>terminal_session_01</span>
+                        <span>JSON / CODE</span>
+                    </div>
+                    <pre class="console-output" id="console-output">// Press any test button, click a file, or send the Echo Form to inspect payloads...</pre>
+                </div>
+                
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--card-border); font-size: 0.85rem; color: var(--text-muted);">
+                    ⚡ Tip: Check terminal logs to see Flask handling requests in real-time.
+                </div>
+            </div>
+
+            <!-- Project File Explorer Card -->
+            <div class="card" id="explorer-card" style="margin-top: 1.5rem;">
+                <h2 class="card-title">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    Project File Explorer
+                </h2>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.25rem;">
+                    Click on any file inside the workspace to inspect its source code inside the terminal.
+                </p>
+                
+                <div class="file-list" id="explorer-file-list">
+                    <div style="color: var(--text-muted); font-size: 0.85rem;">Scanning workspace...</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>Developed with ❤️ using Python Flask. Deployed on port 1919.</p>
+        <p style="margin-top: 0.5rem; font-size: 0.75rem;">Created using Antigravity pair-programming agent.</p>
+    </footer>
+
+    <!-- Interactive JS Core -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

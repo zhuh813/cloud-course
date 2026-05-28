@@ -1,0 +1,36 @@
+# 忽略 Python 快取檔案
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 忽略虛擬環境
+.venv/
+venv/
+ENV/
+env/
+.env
+
+# 忽略測試快取與報告
+.pytest_cache/
+.pytest/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# 忽略 Git 相關檔案
+.git/
+.gitignore
+
+# 忽略 IDE 相關檔案與設定
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# 忽略系統暫存檔
+.DS_Store
+Thumbs.db
